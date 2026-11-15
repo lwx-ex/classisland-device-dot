@@ -4,7 +4,8 @@
 
 给 [ClassIsland](https://classisland.tech/) 主界面加一个小指示器：**橙点 = 麦克风，绿点 = 摄像头**。
 
-![预览](preview.png)
+<img width="512" height="512" alt="icon" src="https://github.com/user-attachments/assets/5eb5206e-6d71-4c64-a96e-28f6e32aa57b" />
+
 
 - 平时是两个安静的灰色实心点；
 - 一旦有程序开始用麦克风或摄像头，对应那个点会亮起来、弹一下，然后从圆点里"吐出"一个带图标的胶囊（例如「摄像头使用中」）；
