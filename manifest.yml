@@ -1,0 +1,12 @@
+﻿# nonk8s
+# ClassIsland 插件清单
+# 文档：https://docs.classisland.tech/dev/plugins/create-project/
+
+id: classisland.devicestatus.dot
+name: 设备占用指示点
+description: 橙点表示麦克风、绿点表示摄像头。被占用时弹出实心圆点提示，随后缩回隐藏。
+entranceAssembly: "ClassIslandDeviceDot.dll"
+url: https://classisland.tech/
+version: 1.0.0.0
+apiVersion: 2.1.0.0
+author: lwx-ex
