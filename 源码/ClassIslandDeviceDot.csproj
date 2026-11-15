@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <AssemblyName>ClassIslandDeviceDot</AssemblyName>
+        <RootNamespace>ClassIslandDeviceDot</RootNamespace>
+        <!--
+          NuGet 上的 ClassIsland 插件 SDK 包与实际发布的程序严重脱节：
+            包 2.1.2  ->  Avalonia 12.1.4 + Core 2.1.2.0
+            Release 2.1.0.1 -> Avalonia 11.3.17 + Core 2.1.0.1
+                             + Hosting.Abstractions 8.0.0.0
+                             + DI.Abstractions 10.0.0.0
+          用 NuGet 包编译的插件在真机上会直接 FileNotFoundException。
+
+          所以这里全部直接引用目标机器上 ClassIsland 自带的 dll，
+          保证 AssemblyRef 与运行时完全一致。
+        -->
+        <!--
+          引用目标 ClassIsland 自带的 dll（不能用 NuGet SDK 包，版本与真机脱节会加载失败）。
+          目录按优先级解析：
+            1) 命令行 -p:ClassIslandDir=... 或同名环境变量（最高）
+            2) 仓库内 ref\ClassIsland\  —— 把目标版本的 4 个 dll 拷进去
+            3) 本机开发用的 _sdkprobe 目录（别人 clone 后不存在，会自动跳过）
+        -->
+        <ClassIslandDir Condition="'$(ClassIslandDir)'=='' and Exists('$(MSBuildProjectDirectory)\ref\ClassIsland\ClassIsland.Core.dll')">$(MSBuildProjectDirectory)\ref\ClassIsland</ClassIslandDir>
+        <ClassIslandDir Condition="'$(ClassIslandDir)'=='' and Exists('$(MSBuildProjectDirectory)\..\..\_sdkprobe\ci212\extracted\app-2.1.2.0-0\ClassIsland.Core.dll')">$(MSBuildProjectDirectory)\..\..\_sdkprobe\ci212\extracted\app-2.1.2.0-0</ClassIslandDir>
+        <ClassIslandDir Condition="'$(ClassIslandDir)'=='' and Exists('$(MSBuildProjectDirectory)\..\_sdkprobe\ci212\extracted\app-2.1.2.0-0\ClassIsland.Core.dll')">$(MSBuildProjectDirectory)\..\_sdkprobe\ci212\extracted\app-2.1.2.0-0</ClassIslandDir>
+        <ClassIslandDir Condition="'$(ClassIslandDir)'==''">$(MSBuildProjectDirectory)\ref\ClassIsland</ClassIslandDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- 2.1.2.0 预览版把 Avalonia 升到了 12.1.4，与 NuGet 12.1.4 版本一致。
+             ExcludeAssets=runtime：不把 Avalonia dll 打进插件，用本体自带的。 -->
+        <PackageReference Include="Avalonia" Version="12.1.4">
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- 全部引用目标机器上 ClassIsland 自带的程序集，保证 AssemblyRef 与运行时一致 -->
+        <Reference Include="ClassIsland.Core">
+            <HintPath>$(ClassIslandDir)\ClassIsland.Core.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+            <HintPath>$(ClassIslandDir)\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>$(ClassIslandDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="CommunityToolkit.Mvvm">
+            <HintPath>$(ClassIslandDir)\CommunityToolkit.Mvvm.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="manifest.yml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="README.md">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="icon.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
