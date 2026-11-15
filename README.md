@@ -1,2 +1,3 @@
 # classlsland-设备占用状态
 一个监视麦克风或摄像头占用的classlsland插件，橙点=麦克风，绿点=摄像头，占用时弹出提示、释放后变灰。提供 net8（2.1.0.1 稳定版）和 net10（2.1.2.0 预览版）两个包，零依赖、无需管理员权限。
+<img width="512" height="512" alt="icon" src="https://github.com/user-attachments/assets/bbdbbebd-5718-4ec1-8e74-cc389808f4b3" />
